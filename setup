@@ -1,0 +1,5 @@
+#!/bin/sh
+workspace=$(pwd)
+cd ~/ && mkdir -p .backup
+cd ~/ && mv -u .bashrc .backup/.bashrc
+cd ~/ && ln -s $workspace/.bashrc .bashrc
