@@ -1,4 +1,3 @@
-# If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
@@ -11,10 +10,7 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+[ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ] && debian_chroot=$(cat /etc/debian_chroot)
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -40,19 +36,37 @@ alias untar='tar -zxf'
 alias st='git status'
 #endof aliases
 
+function list() {
+  find . | grep $1
+}; alias list='list';
+
 function o() {
-  find . | grep $1 | while read filepath; do
+  list $1 | while read filepath; do
     echo "opening: $filepath"
-    x-terminal-emulator --tab --title $filepath --execute "vim \"$filepath\""
+    #x-terminal-emulator --tab --title $filepath --execute "vim $filepath"
   done
 }; alias o='o';
 
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-function show() {
-  PS1='${debian_chroot:+}[\t] \[\033[01;32m\]\u@\h\[\033[00m\] [\[\033[01;34m\]\w\[\033[00m\]] '
+mkdir -p ~/.state
+#echo "time_and_path" > ~/.state/PS1
+function update_prompt() {
+ local PS1state=$(<~/.state/PS1)
+ [ path == $PS1state ] && PS1='${debian_chroot:+}[\[\033[01;34m\]\w\[\033[00m\]] ' 
+ [ time_and_path == $PS1state ] && PS1='${debian_chroot:+}[\t] [\[\033[01;34m\]\w\[\033[00m\]] ' 
+ [ all == $PS1state ] && PS1='${debian_chroot:+}[\t] \[\033[01;32m\]\u@\h\[\033[00m\] [\[\033[01;34m\]\w\[\033[00m\]] '
 };
-function hide() {
-  PS1='${debian_chroot:+}[\t] [\[\033[01;34m\]\w\[\033[00m\]] '
+function +() {
+  local PS1state=$(<~/.state/PS1)
+  [ path == $PS1state ] && echo "time_and_path" > ~/.state/PS1
+  [ time_and_path == $PS1state ] && echo "all" > ~/.state/PS1
+  update_prompt
 };
-hide
+function -() {
+  local PS1state=$(<~/.state/PS1)
+  [ all == $PS1state ] && echo "time_and_path" > ~/.state/PS1
+  [ time_and_path == $PS1state ] && echo "path" > ~/.state/PS1
+  update_prompt
+};
+update_prompt
