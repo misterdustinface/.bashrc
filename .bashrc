@@ -50,23 +50,23 @@ function o() {
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 mkdir -p ~/.state
-#echo "time_and_path" > ~/.state/PS1
-function update_prompt() {
+[ ! -f ~/.state/PS1 ] && touch ~/.state/PS1 && echo "time_and_path" > ~/.state/PS1
+function PS1_update_prompt() {
  local PS1state=$(<~/.state/PS1)
  [ path == $PS1state ] && PS1='${debian_chroot:+}[\[\033[01;34m\]\w\[\033[00m\]] ' 
  [ time_and_path == $PS1state ] && PS1='${debian_chroot:+}[\t] [\[\033[01;34m\]\w\[\033[00m\]] ' 
  [ all == $PS1state ] && PS1='${debian_chroot:+}[\t] \[\033[01;32m\]\u@\h\[\033[00m\] [\[\033[01;34m\]\w\[\033[00m\]] '
 };
-function +() {
+function _more_() {
   local PS1state=$(<~/.state/PS1)
   [ path == $PS1state ] && echo "time_and_path" > ~/.state/PS1
   [ time_and_path == $PS1state ] && echo "all" > ~/.state/PS1
-  update_prompt
-};
-function -() {
+  PS1_update_prompt
+}; alias _more_='_more_';
+function _less_() {
   local PS1state=$(<~/.state/PS1)
   [ all == $PS1state ] && echo "time_and_path" > ~/.state/PS1
   [ time_and_path == $PS1state ] && echo "path" > ~/.state/PS1
-  update_prompt
-};
-update_prompt
+  PS1_update_prompt
+}; alias _less_='_less_';
+PS1_update_prompt
