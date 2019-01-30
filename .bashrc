@@ -33,8 +33,9 @@ alias la='ls -A'
 alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 alias untar='tar -zxf'
+alias st='git status'
 [ $(which git) ] && alias st='git status'
-[ $(which xterm) ] && alias terminal='xterm' || [ $(which gnome-terminal) ] && alias terminal='gnome-terminal' || alias terminal='x-terminal-emulator'
+[ $(which xfce4-terminal) ] && alias terminal='xfce4-terminal' || [ $(which xterm) ] && alias terminal='xterm' || [ $(which gnome-terminal) ] && alias terminal='gnome-terminal' || alias terminal='x-terminal-emulator'
 #endof aliases
 
 function list() {
@@ -44,7 +45,7 @@ function list() {
 function o() {
   list $1 | while read filepath; do
     echo "opening: $filepath"
-    #x-terminal-emulator --tab --title $filepath --execute "vim $filepath"
+    terminal --tab --title="$filepath" --command="vim $filepath"
   done
 }; alias o='o';
 
