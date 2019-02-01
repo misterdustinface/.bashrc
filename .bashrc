@@ -34,6 +34,8 @@ alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 alias untar='tar -zxf'
 alias st='git status'
+alias view_disks='sudo fdisk -l'
+alias watch_interrupts='watch -n 1 -d cat /proc/interrupts'
 [ $(which git) ] && alias st='git status'
 [ $(which xfce4-terminal) ] && alias terminal='xfce4-terminal' || [ $(which xterm) ] && alias terminal='xterm' || [ $(which gnome-terminal) ] && alias terminal='gnome-terminal' || alias terminal='x-terminal-emulator'
 #endof aliases
@@ -48,6 +50,32 @@ function o() {
     terminal --tab --title="$filepath" --command="vim $filepath"
   done
 }; alias o='o';
+
+function background() {
+  $@ > /dev/null 2>&1 &
+}; alias background='background';
+
+function keyword() {
+  grep -rnw "$1" --include=*.{cpp,c,hpp,h,GNU,bash} --exclude=*.{svn-base,a} ./
+}; alias keyword='keyword';
+
+function slink() {
+  if [ "" != "$1" ] && [ "as" == "$2" ] && [ "" != "$3" ] ; then
+    path="$1"
+    alias="$3"
+  else
+    echo "[path] as [alias]" && exit 1
+  fi
+  ln -sf $path $alias
+}; alias slink='slink';
+
+function find_process() {
+  ps aux | grep -i "$1"
+}; alias find_process='find_process';
+
+function linecount() {
+  wc -l < "$1"
+}; alias linecount='linecount';
 
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
